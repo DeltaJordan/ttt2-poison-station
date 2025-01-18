@@ -1,2 +1,2 @@
-# ttt2-pronouns
-Adds a pronoun display to TTT2's TargetID system.
+# ttt2-poison-station
+[Fork](https://github.com/Kalbintion/GMOD-TTT-Poison-Ignite-Station) of the original poison station for TTT2.

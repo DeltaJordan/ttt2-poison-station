@@ -75,7 +75,7 @@ local throwsound = Sound( "Weapon_SLAM.SatchelThrow" )
 -- ye olde droppe code
 function SWEP:PoisonDrop()
    if SERVER then
-      local ply = self.Owner
+      local ply = self.GetOwner()
       if not IsValid(ply) then return end
 
       if self.Planted then return end
@@ -83,7 +83,7 @@ function SWEP:PoisonDrop()
       local vsrc = ply:GetShootPos()
       local vang = ply:GetAimVector()
       local vvel = ply:GetVelocity()
-      
+
       local vthrow = vvel + vang * 200
 
       local poison = ents.Create("ttt_poison_station")
@@ -97,7 +97,7 @@ function SWEP:PoisonDrop()
          local phys = poison:GetPhysicsObject()
          if IsValid(phys) then
             phys:SetVelocity(vthrow)
-         end   
+         end
          self:Remove()
 
          self.Planted = true
@@ -113,7 +113,7 @@ function SWEP:Reload()
 end
 
 function SWEP:OnRemove()
-   if CLIENT and IsValid(self.Owner) and self.Owner == LocalPlayer() and self.Owner:Alive() then
+   if CLIENT and IsValid(self.GetOwner()) and self.GetOwner() == LocalPlayer() and self.GetOwner():Alive() then
       RunConsoleCommand("lastinv")
    end
 end
@@ -127,8 +127,8 @@ if CLIENT then
 end
 
 function SWEP:Deploy()
-   if SERVER and IsValid(self.Owner) then
-      self.Owner:DrawViewModel(false)
+   if SERVER and IsValid(self.GetOwner()) then
+      self.GetOwner():DrawViewModel(false)
    end
    return true
 end
