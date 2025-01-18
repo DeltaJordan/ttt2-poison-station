@@ -1,0 +1,6 @@
+* text=auto
+
+*.lua text
+
+*.png binary
+*.psd binary
