@@ -142,4 +142,63 @@ if SERVER then
 			nextcharge = CurTime() + self.RechargeFreq
 		end
 	end
+else
+	local TryT = LANG.TryTranslation
+	local ParT = LANG.GetParamTranslation
+
+	local key_params = {
+		usekey = Key("+use", "USE"),
+		walkkey = Key("+walk", "WALK"),
+	}
+
+	 -- Emulate healthstation TargetID
+	hook.Add("TTTRenderEntityInfo", "HUDDrawTargetIDPoisonStation", function(tData)
+		local client = LocalPlayer()
+		local ent = tData:GetEntity()
+
+		if
+			not IsValid(client)
+			or not client:IsTerror()
+			or not client:Alive()
+			or not IsValid(ent)
+			or tData:GetEntityDistance() > 100
+			or ent:GetClass() ~= "ttt_poison_station"
+		then
+			return
+		end
+
+		if (client:GetBaseRole() == ROLE_TRAITOR) then
+			tData:EnableText()
+			tData:EnableOutline()
+			tData:SetOutlineColor(client:GetRoleColor())
+
+			tData:SetTitle("WARNING: Poison Station")
+			return
+		end
+
+		-- enable targetID rendering
+		tData:EnableText()
+		tData:EnableOutline()
+		tData:SetOutlineColor(client:GetRoleColor())
+
+		tData:SetTitle(TryT("hstation_name"))
+		tData:SetSubtitle(ParT("hstation_subtitle", key_params))
+		tData:SetKeyBinding("+use")
+
+		local hstation_charge = ent:GetStoredHealth() or 0
+
+		tData:AddDescriptionLine(TryT("hstation_short_desc"))
+
+		tData:AddDescriptionLine(
+			(hstation_charge > 0) and ParT("hstation_charge", { charge = hstation_charge })
+				or TryT("hstation_empty"),
+			(hstation_charge > 0) and roles.DETECTIVE.ltcolor or COLOR_ORANGE
+		)
+
+		if client:Health() < client:GetMaxHealth() then
+			return
+		end
+
+		tData:AddDescriptionLine(TryT("hstation_maxhealth"), COLOR_ORANGE)
+	end)
 end
